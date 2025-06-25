@@ -2,6 +2,7 @@ using JaveragesLibrary.Data;
 using JaveragesLibrary.Services.Features.Mangas;
 using JaveragesLibrary.Services.Features.Prestamos;
 using Microsoft.EntityFrameworkCore;
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -47,6 +48,24 @@ builder.Services.AddCors(options =>
 });
 
 // 📦 Swagger con autenticación
+=======
+using Microsoft.AspNetCore.Authentication.JwtBearer; 
+using Microsoft.IdentityModel.Tokens;               
+using System.Text;                                 
+
+var builder = WebApplication.CreateBuilder(args);
+
+// 💾 Conexión a la base de datos (Somee)
+builder.Services.AddDbContext<MangaDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MangaDb")));
+
+// ✅ Servicios
+builder.Services.AddScoped<MangaService>();
+builder.Services.AddScoped<PrestamoService>();
+
+// ✅ Controladores y Swagger
+builder.Services.AddControllers();
+>>>>>>> 28483a396664b67121d3da7309679797e356df48
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -88,11 +107,36 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+<<<<<<< HEAD
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
 // 🚀 Middleware
+=======
+
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is missing.")))        };
+    });
+
+builder.Services.AddAuthorization();
+
+var app = builder.Build();
+
+// 🔧 Swagger solo en desarrollo
+>>>>>>> 28483a396664b67121d3da7309679797e356df48
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

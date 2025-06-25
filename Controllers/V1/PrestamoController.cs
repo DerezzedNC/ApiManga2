@@ -1,13 +1,23 @@
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using JaveragesLibrary.Services.Features.Prestamos;
 using JaveragesLibrary.Domain.Entities;
+=======
+using JaveragesLibrary.Domain.Entities;
+using JaveragesLibrary.Services.Features.Prestamos;
+using Microsoft.AspNetCore.Mvc;
+>>>>>>> 28483a396664b67121d3da7309679797e356df48
 
 namespace MiMangaBot.Controllers.V1
 {
     [ApiController]
+<<<<<<< HEAD
     [Route("api/v1/[controller]")]
     [Authorize] // 🔒 PROTEGE TODOS LOS ENDPOINTS DE ESTE CONTROLADOR
+=======
+    [Route("api/v1/prestamos")]
+>>>>>>> 28483a396664b67121d3da7309679797e356df48
     public class PrestamoController : ControllerBase
     {
         private readonly PrestamoService _prestamoService;
@@ -17,6 +27,7 @@ namespace MiMangaBot.Controllers.V1
             _prestamoService = prestamoService;
         }
 
+<<<<<<< HEAD
         /// <summary>
         /// Obtiene todos los préstamos (requiere autenticación)
         /// </summary>
@@ -273,6 +284,43 @@ namespace MiMangaBot.Controllers.V1
                     error = ex.Message
                 });
             }
+=======
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            var prestamos = await _prestamoService.GetAllAsync(page, pageSize);
+            return Ok(prestamos);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var prestamo = await _prestamoService.GetByIdAsync(id);
+            return prestamo == null ? NotFound() : Ok(prestamo);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add([FromBody] Prestamo prestamo)
+        {
+            await _prestamoService.AddAsync(prestamo);
+            return Ok(prestamo);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] Prestamo prestamo)
+        {
+            if (id != prestamo.Id) return BadRequest();
+            
+            await _prestamoService.UpdateAsync(id, prestamo);                                           
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _prestamoService.DeleteAsync(id);
+            return NoContent();
+>>>>>>> 28483a396664b67121d3da7309679797e356df48
         }
     }
 }
